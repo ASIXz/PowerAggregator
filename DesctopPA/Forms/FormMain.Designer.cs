@@ -59,7 +59,7 @@
             this.addToContactToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonSend = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -300,23 +300,23 @@
             this.textBox1.Size = new System.Drawing.Size(561, 52);
             this.textBox1.TabIndex = 6;
             // 
-            // button1
+            // buttonSend
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button1.Location = new System.Drawing.Point(826, 488);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(77, 52);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "Send";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.buttonSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttonSend.Location = new System.Drawing.Point(826, 488);
+            this.buttonSend.Name = "buttonSend";
+            this.buttonSend.Size = new System.Drawing.Size(77, 52);
+            this.buttonSend.TabIndex = 7;
+            this.buttonSend.Text = "Send";
+            this.buttonSend.UseVisualStyleBackColor = true;
+            this.buttonSend.Click += new System.EventHandler(this.buttonSend_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(915, 553);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.buttonSend);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label2);
@@ -361,7 +361,7 @@
         private System.Windows.Forms.ToolStripMenuItem addToContactToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editContactToolStripMenuItem;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonSend;
         private System.Windows.Forms.ToolStripMenuItem removeContactToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewInfoToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem viewInfoToolStripMenuItem;

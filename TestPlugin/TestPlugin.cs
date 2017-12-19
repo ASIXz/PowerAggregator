@@ -25,89 +25,77 @@ namespace TestPlugin
         {
             var Result = new Message[]
             {
-                new Message()
+                new Message(user)
                 {
                     Recived = false,
                     Text= "Dialog Start!",
-                    Time = new DateTime(2017,12,10,10,10,int.Parse(user.UserId)),
-                    User = user
+                    Time = new DateTime(2017,12,10,10,10,int.Parse(user.UserId))
                 },
-                new Message()
+                new Message(user)
                 {
                     Recived = true,
                     Text= "Message 1!",
-                    Time = new DateTime(2017,12,10,10,12,int.Parse(user.UserId)),
-                    User = user
+                    Time = new DateTime(2017,12,10,10,12,int.Parse(user.UserId))
                 },
-                new Message()
+                new Message(user)
                 {
                     Recived = false,
                     Text= "Message 2!",
-                    Time = new DateTime(2017,12,10,10,14,int.Parse(user.UserId)),
-                    User = user
+                    Time = new DateTime(2017,12,10,10,14,int.Parse(user.UserId))
                 },
-                new Message()
+                new Message(user)
                 {
                     Recived = true,
                     Text= "Bye bye!",
-                    Time = new DateTime(2017,12,10,10,17,int.Parse(user.UserId)),
-                    User = user
+                    Time = new DateTime(2017,12,10,10,17,int.Parse(user.UserId))
                 },
-                new Message()
+                new Message(user)
                 {
                     Recived = false,
                     Text= "Dialog Start 2!",
-                    Time = new DateTime(2017,12,11,10,10,int.Parse(user.UserId)),
-                    User = user
+                    Time = new DateTime(2017,12,11,10,10,int.Parse(user.UserId))
                 },
-                new Message()
+                new Message(user)
                 {
                     Recived = true,
                     Text= "Message 1!",
-                    Time = new DateTime(2017,12,11,10,12,int.Parse(user.UserId)),
-                    User = user
+                    Time = new DateTime(2017,12,11,10,12,int.Parse(user.UserId))
                 },
-                new Message()
+                new Message(user)
                 {
                     Recived = false,
                     Text= "Message 2!",
-                    Time = new DateTime(2017,12,11,10,14,int.Parse(user.UserId)),
-                    User = user
+                    Time = new DateTime(2017,12,11,10,14,int.Parse(user.UserId))
                 },
-                new Message()
+                new Message(user)
                 {
                     Recived = true,
                     Text= "Bye bye 2!",
-                    Time = new DateTime(2017,12,11,10,17,int.Parse(user.UserId)),
-                    User = user
+                    Time = new DateTime(2017,12,11,10,17,int.Parse(user.UserId))
                 },
-                new Message()
+                new Message(user)
                 {
                     Recived = true,
                     Text= "Dialog Start 3!",
-                    Time = new DateTime(2017,12,11,11,10,int.Parse(user.UserId)),
-                    User = user
+                    Time = new DateTime(2017,12,11,11,10,int.Parse(user.UserId))
                 },
-                new Message()
+                new Message(user)
                 {
                     Recived = false,
                     Text= "Message 1!",
-                    Time = new DateTime(2017,12,11,11,12,int.Parse(user.UserId)),
-                    User = user
+                    Time = new DateTime(2017,12,11,11,12,int.Parse(user.UserId))
                 },
-                new Message()
+                new Message(user)
                 {
                     Recived = true,
                     Text= "Message 2!",
-                    Time = new DateTime(2017,12,11,11,14,int.Parse(user.UserId)),
-                    User = user
+                    Time = new DateTime(2017,12,11,11,14,int.Parse(user.UserId))
                 },
-                new Message()
+                new Message(user)
                 {
                     Recived = false,
                     Text= "Bye bye 3!",
-                    Time = new DateTime(2017,12,11,11,17,int.Parse(user.UserId)),
-                    User = user
+                    Time = new DateTime(2017,12,11,11,17,int.Parse(user.UserId))
                 }
             };
 
@@ -241,7 +229,7 @@ namespace TestPlugin
                 new Task(() =>
                 {
                     Task.Delay(5000).Wait();
-                    MessageRecived?.Invoke(new Message() { Recived = true, Time = DateTime.Now, Text = "Thanks for: " + msgText, User = msgUser});
+                    MessageRecived?.Invoke(new Message(msgUser) { Recived = true, Time = DateTime.Now.AddSeconds(5), Text = "Thanks for: " + msgText});
                 }).Start();
             }
             return true;

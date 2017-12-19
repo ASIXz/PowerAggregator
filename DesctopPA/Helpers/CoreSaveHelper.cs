@@ -3,6 +3,7 @@ using PowerAgregator;
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace DesctopPA
 {
@@ -12,6 +13,11 @@ namespace DesctopPA
         public DbSet<ChatterUserData> ChatterUser { get; set; }
         public DbSet<SerializedAccount> Accounts { get; set; }
         public DbSet<MessageData> Messages { get; set; }
+
+        public PowerAgregatorContext5() 
+        {
+
+        }
     }
 
     public static class CoreSaveHelper
@@ -81,6 +87,7 @@ namespace DesctopPA
         public static void SaveMessage(Message message)
         {
             db.Messages.Add(message.StoreData());
+            db.SaveChanges();
         }
     }
 }

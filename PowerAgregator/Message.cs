@@ -34,7 +34,10 @@ namespace PowerAgregator
             return Time.ToString("[yyyy.MM.dd hh:mm]") + (Recived ? "" : "\t") + Text;
         }
 
-        public Message() { }
+        public Message(ChatterUser user)
+        {
+            this.User = user;
+        }
         public Message(MessageData data, ChatterUser user)
         {
             this.Recived = data.Recived;

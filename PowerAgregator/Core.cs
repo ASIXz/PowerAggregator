@@ -120,7 +120,7 @@ namespace PowerAgregator
 
         public void SendMessage(ChatterUser user, string message)
         {
-            Message msg = new Message() { Time = DateTime.Now, Text = message, User = user, Recived = false };
+            Message msg = new Message(user) { Time = DateTime.Now, Text = message, Recived = false };
             if (user.Chatter.SendMessage(ref msg))
             {
                 AddMessage(msg);

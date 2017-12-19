@@ -17,6 +17,8 @@ namespace DesctopPA
     {
         Core Core = new Core();
         object CurrentUser = null;
+        ImageList images = new ImageList();
+
         delegate void AddMessageActio(PowerAgregator.Message msg);
         void AddMessage(PowerAgregator.Message msg)
         {
@@ -31,6 +33,13 @@ namespace DesctopPA
                     foreach (ListViewItem item in listAgregatorContacts.Items)
                     {
                         if (item.Tag == msg.User.AgregatorUser) item.Font = new Font(item.Font, FontStyle.Bold);
+                    }
+                }
+                else
+                {
+                    foreach (ListViewItem item in listChattersContacts.Items)
+                    {
+                        if (item.Tag == msg.User) item.Font = new Font(item.Font, FontStyle.Bold);
                     }
                 }
             }
@@ -51,15 +60,14 @@ namespace DesctopPA
         {
             //CoreSaveHelper.ClearDatabase();
             CoreSaveHelper.RestoreAccountDataFromDataBase(Core);
-            LoadContacts();
-            ImageList imgs = new ImageList();
-            imgs.ImageSize = new Size(44, 44);
-            var dir = Directory.GetFiles(@"G:\Документы\Магистр\img");
+            images.ImageSize = new Size(44, 44);
+            var dir = Directory.GetFiles(Path.GetFullPath("img"));
             foreach (var item in dir)
             {
-                imgs.Images.Add(Image.FromFile(item));
+                images.Images.Add(Path.GetFileNameWithoutExtension(item), Image.FromFile(item));
             }
-            listAgregatorContacts.LargeImageList = imgs;
+            listAgregatorContacts.LargeImageList = images;
+            LoadContacts();
         }
 
         private void addAccountToolStripMenuItem_Click(object sender, EventArgs e)
@@ -109,6 +117,11 @@ namespace DesctopPA
             {
                 var item = listAgregatorContacts.Items.Add(user.ToString(), i++);
                 item.Tag = user;
+                string ImageKey = string.Concat(user.Name.Where(x => !Path.GetInvalidPathChars().Contains(x)));
+                if (listAgregatorContacts.LargeImageList.Images.Keys.Contains(ImageKey))
+                    item.ImageKey = ImageKey;
+                else
+                    item.ImageKey = "default";
             }
             listChattersContacts.Clear();
             foreach (ChatterUser user in Core.ChatterUsers)
@@ -183,17 +196,18 @@ namespace DesctopPA
             e.ItemWidth = listMessages.Width;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonSend_Click(object sender, EventArgs e)
         {
             if (CurrentUser != null)
             {
                 if (string.IsNullOrWhiteSpace(textBox1.Text))
                     MessageBox.Show("Empty message is not allowed!");
                 else
-                if (CurrentUser is ChatterUser)
-                    Core.SendMessage(CurrentUser as ChatterUser, textBox1.Text);
-                else
-                    Core.SendMessage(CurrentUser as AgregatorUser, textBox1.Text);
+                {
+                    if (CurrentUser is ChatterUser) Core.SendMessage(CurrentUser as ChatterUser, textBox1.Text);
+                    else Core.SendMessage(CurrentUser as AgregatorUser, textBox1.Text);
+                    textBox1.Text = "";
+                }
             }
             else
             {

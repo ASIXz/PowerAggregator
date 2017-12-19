@@ -193,12 +193,11 @@ namespace TelegramPlugin
             var result = msgs.Messages.Select(x =>
             {
                 var msg = (TLMessage)x;
-                return new Message()
+                return new Message(user)
                 {
                     Time = ZeroTDate.AddSeconds(msg.Date),
                     Recived = !msg.Out,
-                    Text = msg.Message,
-                    User = user
+                    Text = msg.Message
                 };
             });
 

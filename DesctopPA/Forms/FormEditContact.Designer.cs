@@ -103,6 +103,7 @@
             this.button4.TabIndex = 11;
             this.button4.Text = "Browse";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // textBox2
             // 
@@ -163,12 +164,12 @@
         private System.Windows.Forms.ListView listChattersContacts;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button button5;
+        public System.Windows.Forms.TextBox textBox1;
     }
 }
