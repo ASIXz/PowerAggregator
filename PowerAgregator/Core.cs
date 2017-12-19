@@ -71,6 +71,7 @@ namespace PowerAgregator
             {
                 if (Chatters.Any(x => x.Id == Id)) return null;
                 ChatPlugin.Initialize(Name, Id);
+                ChatPlugin.MessageRecived += AddMessage;
                 Chatters.Add(ChatPlugin);
 
                 return ChatPlugin;
@@ -91,7 +92,7 @@ namespace PowerAgregator
         {
             if (user.ActiveDialog != null && user.DialogExpire < DateTime.Now)
             {
-                SendMessage(user, message);
+                SendMessage(user.ActiveDialog, message);
             }
             else
             {
@@ -122,12 +123,13 @@ namespace PowerAgregator
             Message msg = new Message() { Time = DateTime.Now, Text = message, User = user, Recived = false };
             if (user.Chatter.SendMessage(ref msg))
             {
-                AddMessage(user, msg);
+                AddMessage(msg);
             }
         }
 
-        public void AddMessage(ChatterUser user, Message message)
+        public void AddMessage(Message message)
         {
+            var user = message.User;
             if (user.AgregatorUser != null)
             {
                 if (message.Recived)

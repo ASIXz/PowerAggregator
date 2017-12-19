@@ -58,6 +58,7 @@ namespace DesctopPA
                 var plugin = PluginHelper.Plugins.First(x => x.FullName == acc.Type);
                 var Chatter = Activator.CreateInstance(plugin) as IChatPlugin;
                 Chatter.RestoreData(acc);
+                Chatter.MessageRecived += core.AddMessage;
                 core.Chatters.Add(Chatter);
             }
 
@@ -75,6 +76,11 @@ namespace DesctopPA
             db.Messages.RemoveRange(db.Messages.Where(x => x.UserId == user.UserId));
             db.Messages.AddRange(user.Messages.Select(x => x.StoreData()));
             db.SaveChanges();
+        }
+        
+        public static void SaveMessage(Message message)
+        {
+            db.Messages.Add(message.StoreData());
         }
     }
 }

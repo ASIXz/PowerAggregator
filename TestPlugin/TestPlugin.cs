@@ -234,13 +234,14 @@ namespace TestPlugin
         {
             message.Recived = false;
             string msgText = message.Text;
+            ChatterUser msgUser = message.User;
             if (msgText.StartsWith("reply", StringComparison.InvariantCultureIgnoreCase))
             {
                 msgText = msgText.Substring(6);
                 new Task(() =>
                 {
                     Task.Delay(5000).Wait();
-                    MessageRecived?.Invoke(new Message() { Recived = true, Time = DateTime.Now, Text = "Thanks for: " + msgText });
+                    MessageRecived?.Invoke(new Message() { Recived = true, Time = DateTime.Now, Text = "Thanks for: " + msgText, User = msgUser});
                 }).Start();
             }
             return true;

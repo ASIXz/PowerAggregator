@@ -17,13 +17,34 @@ namespace DesctopPA
     {
         Core Core = new Core();
         object CurrentUser = null;
-
+        delegate void AddMessageActio(PowerAgregator.Message msg);
+        void AddMessage(PowerAgregator.Message msg)
+        {
+            if (CurrentUser != null && (CurrentUser == msg.User || CurrentUser == msg.User.AgregatorUser))
+            {
+                listMessages.Items.Add(msg);
+            }
+            else
+            {
+                if (msg.User.AgregatorUser != null)
+                {
+                    foreach (ListViewItem item in listAgregatorContacts.Items)
+                    {
+                        if (item.Tag == msg.User.AgregatorUser) item.Font = new Font(item.Font, FontStyle.Bold);
+                    }
+                }
+            }
+        }
         public FormMain()
         {
             InitializeComponent();
             listAgregatorContacts.Dock = DockStyle.Fill;
             listChattersContacts.Dock = DockStyle.Fill;
-            Core.MessageAdded += (x) => { MessageBox.Show(x.ToString()); };
+            Core.MessageAdded += (x) =>
+            {
+                Invoke(new AddMessageActio(AddMessage), x);
+                CoreSaveHelper.SaveMessage(x);
+            };
         }
 
         private void FormMain_Load(object sender, EventArgs e)
@@ -54,22 +75,30 @@ namespace DesctopPA
 
         private void listAgregatorContacts_ItemActivate(object sender, EventArgs e)
         {
-            var user = listAgregatorContacts.SelectedItems[0].Tag as AgregatorUser;
-            listBox1.Items.Clear();
-            listBox1.Items.AddRange(Core.GetChatMessages(user, CoreSaveHelper.LoadMessages).ToArray());
-            label2.Text = "Messages - " + user.ToString();
-            CurrentUser = user;
+            if (listAgregatorContacts.SelectedItems.Count > 0)
+            {
+                var user = listAgregatorContacts.SelectedItems[0].Tag as AgregatorUser;
+                listMessages.Items.Clear();
+                listMessages.Items.AddRange(Core.GetChatMessages(user, CoreSaveHelper.LoadMessages).ToArray());
+                label2.Text = "Messages - " + user.ToString();
+                CurrentUser = user;
+                listAgregatorContacts.SelectedItems[0].Font = new Font(listAgregatorContacts.SelectedItems[0].Font, FontStyle.Regular);
+            }
         }
 
         private void listChattersContacts_ItemActivate(object sender, EventArgs e)
         {
-            listBox1.Items.Clear();
-            var user = listChattersContacts.SelectedItems[0].Tag as ChatterUser;
-            if (user.Messages == null) CoreSaveHelper.LoadMessages(user);
-            listBox1.Items.AddRange(Core.GetChatMessages(user).ToArray());
-            CoreSaveHelper.SaveMessages(user);
-            label2.Text = "Messages - " + user.ToString();
-            CurrentUser = user;
+            if (listChattersContacts.SelectedItems.Count > 0)
+            {
+                listMessages.Items.Clear();
+                var user = listChattersContacts.SelectedItems[0].Tag as ChatterUser;
+                if (user.Messages == null) CoreSaveHelper.LoadMessages(user);
+                listMessages.Items.AddRange(Core.GetChatMessages(user).ToArray());
+                CoreSaveHelper.SaveMessages(user);
+                label2.Text = "Messages - " + user.ToString();
+                CurrentUser = user;
+                listChattersContacts.SelectedItems[0].Font = new Font(listChattersContacts.SelectedItems[0].Font, FontStyle.Regular);
+            }
         }
 
         private void LoadContacts()
@@ -135,23 +164,23 @@ namespace DesctopPA
 
         private void listBox1_DrawItem(object sender, DrawItemEventArgs e)
         {
-            if (e.Index >= 0 && listBox1.Items[e.Index] is PowerAgregator.Message)
+            if (e.Index >= 0 && listMessages.Items[e.Index] is PowerAgregator.Message)
             {
                 e.DrawBackground();
-                var msg = listBox1.Items[e.Index] as PowerAgregator.Message;
+                var msg = listMessages.Items[e.Index] as PowerAgregator.Message;
                 var color = msg.Recived ? Brushes.Black : Brushes.DarkCyan;
-                e.Graphics.DrawString(msg.ToString(), listBox1.Font, color, e.Bounds);
+                e.Graphics.DrawString(msg.ToString(), listMessages.Font, color, e.Bounds);
                 e.DrawFocusRectangle();
             }
         }
 
         private void listBox1_MeasureItem(object sender, MeasureItemEventArgs e)
         {
-            string s = listBox1.Items[e.Index].ToString();
-            SizeF sf = e.Graphics.MeasureString(s, listBox1.Font, listBox1.Width);
+            string s = listMessages.Items[e.Index].ToString();
+            SizeF sf = e.Graphics.MeasureString(s, listMessages.Font, listMessages.Width);
             int htex = (e.Index == 0) ? 15 : 10;
             e.ItemHeight = (int)(sf.Height) + 1;
-            e.ItemWidth = listBox1.Width;
+            e.ItemWidth = listMessages.Width;
         }
 
         private void button1_Click(object sender, EventArgs e)
