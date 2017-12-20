@@ -119,7 +119,7 @@ namespace PowerAgregator
         public ChatterUser() { }
         public ChatterUser(ChatterUserData data, Core core)
         {
-            this.Name = data.Name;
+            this.Name = data.Name.Split('[')[0];
             this.UserId = data.UserId;
             this.Chatter = core.Chatters.First(x => x.Id == data.ChatterId);
             if (data.AgregatorUserId != null)
@@ -135,7 +135,7 @@ namespace PowerAgregator
             {
                 AgregatorUserId = AgregatorUser != null ? AgregatorUser.Name : null,
                 ChatterId = Chatter.Id,
-                Name = Name,
+                Name = this.ToString(),
                 UserId = UserId
             };
         }

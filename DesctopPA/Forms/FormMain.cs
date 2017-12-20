@@ -240,5 +240,19 @@ namespace DesctopPA
         {
             autoScrollToolStripMenuItem.Checked = !autoScrollToolStripMenuItem.Checked;
         }
+
+        private void clearDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Warning! It will remove all local accaunts and data!", "Delete database", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                DBHelper.ClearDatabase();
+                Core.Chatters.Clear();
+                Core.ChatterUsers.Clear();
+                Core.Users.Clear();
+                LoadContacts();
+                CurrentUser = null;
+                listMessages.Items.Clear();
+            }
+        }
     }
 }

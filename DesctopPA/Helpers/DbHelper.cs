@@ -52,6 +52,8 @@ namespace DesctopPA
             db.Messages.RemoveRange(db.Messages);
 
             db.SaveChanges();
+
+            
         }
 
         public static void RestoreAccountDataFromDataBase(Core core)

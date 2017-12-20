@@ -45,6 +45,8 @@
             this.addAccountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeAccountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoScrollToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.listAgregatorContacts = new System.Windows.Forms.ListView();
@@ -60,8 +62,7 @@
             this.viewInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.buttonSend = new System.Windows.Forms.Button();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.autoScrollToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -120,6 +121,7 @@
             this.programToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addPluginToolStripMenuItem,
             this.removePluginToolStripMenuItem,
+            this.clearDatabaseToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.programToolStripMenuItem.Name = "programToolStripMenuItem";
             this.programToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
@@ -173,6 +175,23 @@
             this.reloginToolStripMenuItem.Name = "reloginToolStripMenuItem";
             this.reloginToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.reloginToolStripMenuItem.Text = "Relogin";
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.autoScrollToolStripMenuItem});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // autoScrollToolStripMenuItem
+            // 
+            this.autoScrollToolStripMenuItem.Checked = true;
+            this.autoScrollToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.autoScrollToolStripMenuItem.Name = "autoScrollToolStripMenuItem";
+            this.autoScrollToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.autoScrollToolStripMenuItem.Text = "AutoScroll";
+            this.autoScrollToolStripMenuItem.Click += new System.EventHandler(this.autoScrollToolStripMenuItem_Click);
             // 
             // tabControl1
             // 
@@ -314,22 +333,12 @@
             this.buttonSend.UseVisualStyleBackColor = true;
             this.buttonSend.Click += new System.EventHandler(this.buttonSend_Click);
             // 
-            // settingsToolStripMenuItem
+            // clearDatabaseToolStripMenuItem
             // 
-            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.autoScrollToolStripMenuItem});
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.settingsToolStripMenuItem.Text = "Settings";
-            // 
-            // autoScrollToolStripMenuItem
-            // 
-            this.autoScrollToolStripMenuItem.Checked = true;
-            this.autoScrollToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.autoScrollToolStripMenuItem.Name = "autoScrollToolStripMenuItem";
-            this.autoScrollToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.autoScrollToolStripMenuItem.Text = "AutoScroll";
-            this.autoScrollToolStripMenuItem.Click += new System.EventHandler(this.autoScrollToolStripMenuItem_Click);
+            this.clearDatabaseToolStripMenuItem.Name = "clearDatabaseToolStripMenuItem";
+            this.clearDatabaseToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.clearDatabaseToolStripMenuItem.Text = "Clear database";
+            this.clearDatabaseToolStripMenuItem.Click += new System.EventHandler(this.clearDatabaseToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -391,6 +400,7 @@
         private System.Windows.Forms.ToolStripMenuItem reloginToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoScrollToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearDatabaseToolStripMenuItem;
     }
 }
 
