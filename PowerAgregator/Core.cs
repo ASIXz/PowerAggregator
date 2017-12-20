@@ -14,7 +14,7 @@ namespace PowerAgregator
         public List<AgregatorUser> Users = new List<AgregatorUser>();
         public List<ChatterUser> ChatterUsers = new List<ChatterUser>();
 
-        public event Action<Message> MessageAdded;
+        public event Action<IEnumerable<Message>, ChatterUser> MessageAdded;
 
         public Core()
         {
@@ -123,16 +123,15 @@ namespace PowerAgregator
             Message msg = new Message(user) { Time = DateTime.Now, Text = message, Recived = false };
             if (user.Chatter.SendMessage(ref msg))
             {
-                AddMessage(msg);
+                AddMessage(new Message[] { msg }, user);
             }
         }
 
-        public void AddMessage(Message message)
+        public void AddMessage(IEnumerable<Message> messages, ChatterUser user)
         {
-            var user = message.User;
             if (user.AgregatorUser != null)
             {
-                if (message.Recived)
+                if (messages.Any(x =>x.Recived))
                 {
                     user.AgregatorUser.ActiveDialog = user;
                     user.AgregatorUser.DialogExpire = DateTime.Now + user.ResponseTime;
@@ -140,14 +139,14 @@ namespace PowerAgregator
                 else
                 {
                     //if first output message
-                    if(user.AgregatorUser.ActiveDialog == user && user.Messages.Last().Recived)
+                    if (user.AgregatorUser.ActiveDialog == user && user.Messages.Last().Recived)
                     {//no update StartTime, just doble existing waiting time;
                         user.AgregatorUser.DialogExpire += user.ResponseTime;
                     }
                 }
             }
-            user.Messages.Add(message);
-            MessageAdded?.Invoke(message);
+            user.Messages.AddRange(messages);
+            MessageAdded?.Invoke(messages, user);
         }
 
         public bool ChangeUserKey(AgregatorUser user, string name)

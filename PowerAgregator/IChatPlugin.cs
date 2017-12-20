@@ -51,7 +51,7 @@ namespace PowerAgregator
         /// <summary>
         /// 
         /// </summary>
-        event Action<Message> MessageRecived;
+        event Action<IEnumerable<Message>, ChatterUser> MessageRecived;
 
         /// <summary>
         /// Get full list of refered users
@@ -79,7 +79,7 @@ namespace PowerAgregator
         /// <param name="user"></param>
         /// <param name="LastMessage"></param>
         /// <returns></returns>
-        IEnumerable<Message> GetChatForUser(ChatterUser user, DateTime LastMessage);
+        IEnumerable<Message> GetChatForUser(ChatterUser user, int skipCount);
 
         /// <summary>
         /// Sending message method

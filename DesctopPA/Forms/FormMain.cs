@@ -18,27 +18,27 @@ namespace DesctopPA
         Core Core = new Core();
         object CurrentUser = null;
 
-        delegate void AddMessageActio(PowerAgregator.Message msg);
-        void AddMessage(PowerAgregator.Message msg)
+        delegate void AddMessageActio(IEnumerable<PowerAgregator.Message> msgs, ChatterUser user);
+        void AddMessage(IEnumerable<PowerAgregator.Message> msgs, ChatterUser user)
         {
-            if (CurrentUser != null && (CurrentUser == msg.User || CurrentUser == msg.User.AgregatorUser))
+            if (CurrentUser != null && (CurrentUser == user || CurrentUser == user.AgregatorUser))
             {
-                listMessages.Items.Add(msg);
+                listMessages.Items.AddRange(msgs.ToArray());
             }
             else
             {
-                if (msg.User.AgregatorUser != null)
+                if (user.AgregatorUser != null)
                 {
                     foreach (ListViewItem item in listAgregatorContacts.Items)
                     {
-                        if (item.Tag == msg.User.AgregatorUser) item.Font = new Font(item.Font, FontStyle.Bold);
+                        if (item.Tag == user.AgregatorUser) item.Font = new Font(item.Font, FontStyle.Bold);
                     }
                 }
                 else
                 {
                     foreach (ListViewItem item in listChattersContacts.Items)
                     {
-                        if (item.Tag == msg.User) item.Font = new Font(item.Font, FontStyle.Bold);
+                        if (item.Tag == user) item.Font = new Font(item.Font, FontStyle.Bold);
                     }
                 }
             }
@@ -48,10 +48,10 @@ namespace DesctopPA
             InitializeComponent();
             listAgregatorContacts.Dock = DockStyle.Fill;
             listChattersContacts.Dock = DockStyle.Fill;
-            Core.MessageAdded += (x) =>
+            Core.MessageAdded += (x, u) =>
             {
-                Invoke(new AddMessageActio(AddMessage), x);
-                DBHelper.SaveMessage(x);
+                Invoke(new AddMessageActio(AddMessage), x, u);
+                DBHelper.SaveMessages(u);
             };
         }
 

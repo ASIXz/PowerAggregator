@@ -83,7 +83,12 @@ namespace DesctopPA
         public static void SaveMessages(ChatterUser user)
         {
             db.Messages.RemoveRange(db.Messages.Where(x => x.UserId == user.UserId));
-            db.Messages.AddRange(user.Messages.GroupBy(x => x.Time).Select(x => x.First().StoreData()));
+            db.Messages.AddRange(user.Messages.Select((x, i) =>
+            {
+                var c = x.StoreData();
+                c.Id += i.ToString();
+                return c;
+            }));
             db.SaveChanges();
         }
 

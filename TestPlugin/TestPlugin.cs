@@ -19,7 +19,7 @@ namespace TestPlugin
 
         public bool IsAutoResume { get { return false; } }
 
-        public event Action<Message> MessageRecived;
+        public event Action<IEnumerable<Message>, ChatterUser> MessageRecived;
 
         public IEnumerable<Message> GetChatForUser(ChatterUser user)
         {
@@ -107,7 +107,7 @@ namespace TestPlugin
             return Result;
         }
 
-        public IEnumerable<Message> GetChatForUser(ChatterUser user, DateTime LastMessage)
+        public IEnumerable<Message> GetChatForUser(ChatterUser user, int LastMessage)
         {
             throw new NotImplementedException();
         }
@@ -229,7 +229,7 @@ namespace TestPlugin
                 new Task(() =>
                 {
                     Task.Delay(5000).Wait();
-                    MessageRecived?.Invoke(new Message(msgUser) { Recived = true, Time = DateTime.Now.AddSeconds(5), Text = "Thanks for: " + msgText});
+                    MessageRecived?.Invoke(new Message[] { new Message(msgUser) { Recived = true, Time = DateTime.Now.AddSeconds(5), Text = "Thanks for: " + msgText } }, msgUser);
                 }).Start();
             }
             return true;

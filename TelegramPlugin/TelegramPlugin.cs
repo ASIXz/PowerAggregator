@@ -74,13 +74,7 @@ namespace TelegramPlugin
                 hash = await client.SendCodeRequestAsync(login);
             }
         }
-        TLDifference diff = null;
-        private async void DifferenceCheck()
-        {
-            var state = await client.SendRequestAsync<TLState>(new TLRequestGetState());
-            var req = new TLRequestGetDifference() { Date = state.Date, Pts = state.Pts, Qts = state.Qts };
-            diff = await client.SendRequestAsync<TLAbsDifference>(req) as TLDifference;
-        }
+        IEnumerable<ChatterUser> users = null;
 
         public bool LoginStep2(string code)
         {
@@ -104,15 +98,19 @@ namespace TelegramPlugin
                         /* run your code here */
                         while (true)
                         {
-                            DifferenceCheck();
-                            Task.Delay(1000).Wait();
-                            if (diff != null)
+                            if (users != null)
                             {
-                                foreach (var msg in diff.NewMessages.OfType<TLUpdateNewMessage>())
+                                foreach (ChatterUser user in users)
                                 {
-                                    TLMessage c = msg.Message as TLMessage;
+                                    var msgs = GetChatForUser(user, user.Messages.Count);
+                                    if (msgs.Any())
+                                    {
+                                        user.Messages.AddRange(msgs);
+                                        MessageRecived?.Invoke(msgs, user);
+                                    }
                                 }
                             }
+                            Task.Delay(1000).Wait();
                         }
                     });
                     z.Start();
@@ -140,7 +138,9 @@ namespace TelegramPlugin
 
         object ActionResult;
 
-        public event Action<Message> MessageRecived;
+        object Messages;
+
+        public event Action<IEnumerable<Message>, ChatterUser> MessageRecived;
 
         async void AGetUsers()
         {
@@ -163,7 +163,8 @@ namespace TelegramPlugin
                 {
                     Chatter = this,
                     Name = user.FirstName,
-                    UserId = (user.AccessHash ?? 0).ToString() + "!" + user.Id.ToString()
+                    UserId = (user.AccessHash ?? 0).ToString() + "!" + user.Id.ToString(),
+                    Messages = new List<Message>()
                 };
             });
         }
@@ -180,7 +181,9 @@ namespace TelegramPlugin
             x.Start();
             x.Join();
             var result = ActionResult as IEnumerable<ChatterUser>;
-            foreach (ChatterUser item in result)
+            users = result;
+
+            /*foreach (ChatterUser item in result)
             {
                 try
                 {
@@ -190,7 +193,7 @@ namespace TelegramPlugin
                 {
                     item.Messages = new Message[] { new Message(item) { Time = DateTime.Now, Recived = true, Text = ex.Message } }.ToList();
                 }
-            }
+            }*/
             return result;
         }
 
@@ -202,21 +205,21 @@ namespace TelegramPlugin
             return hash;
         }
 
-        public async void AGetHistory(ChatterUser user)
+        public async void AGetHistory(ChatterUser user, int skipCount)
         {
             int id = 0;
             long hash = DecomposeId(user.UserId, out id);
             try
             {
-                ActionResult = await client.GetHistoryAsync(new TLInputPeerUser() { UserId = id, AccessHash = hash }, 0, 0, 0);
+                Messages = await client.GetHistoryAsync(new TLInputPeerUser() { UserId = id, AccessHash = hash }, skipCount, 0, 0);
             }
             catch (Exception ex)
             {
-                ActionResult = new TLMessagesSlice();
+                Messages = new TLMessagesSlice();
             }
         }
 
-        public IEnumerable<Message> GetChatForUser(ChatterUser user)
+        public IEnumerable<Message> GetChatForUser(ChatterUser user, int skipCount)
         {
             int id = 0;
             if (DecomposeId(user.UserId, out id) == this.user.AccessHash) return new List<Message>();
@@ -224,14 +227,14 @@ namespace TelegramPlugin
             {
                 Thread.CurrentThread.IsBackground = true;
                 /* run your code here */
-                AGetHistory(user);
+                AGetHistory(user, skipCount);
                 Task.Delay(1000).Wait();
             });
             z.Start();
             z.Join();
-            if (ActionResult is TLMessagesSlice)
+            if (Messages is TLMessagesSlice)
             {
-                var msgs = (TLMessagesSlice)ActionResult;
+                var msgs = (TLMessagesSlice)Messages;
                 var result = msgs.Messages.Select(x =>
                 {
                     var msg = (TLMessage)x;
@@ -246,7 +249,7 @@ namespace TelegramPlugin
             }
             else
             {
-                var msgs = (TLMessages)ActionResult;
+                var msgs = (TLMessages)Messages;
                 var result = msgs.Messages.Select(x =>
                 {
                     var msg = (TLMessage)x;
@@ -290,9 +293,9 @@ namespace TelegramPlugin
             //user = session.TLUser;
         }
 
-        public IEnumerable<Message> GetChatForUser(ChatterUser user, DateTime LastMessage)
+        public IEnumerable<Message> GetChatForUser(ChatterUser user)
         {
-            throw new NotImplementedException();
+            return GetChatForUser(user, 0);
         }
 
         async void ASendMessage(Message msg)
