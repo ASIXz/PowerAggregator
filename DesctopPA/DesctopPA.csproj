@@ -137,6 +137,12 @@
     <Compile Include="Helpers\PluginHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Forms\ViewChatterContact.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ViewChatterContact.Designer.cs">
+      <DependentUpon>ViewChatterContact.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Forms\FormRemoveAccount.resx">
       <DependentUpon>FormRemoveAccount.cs</DependentUpon>
     </EmbeddedResource>
@@ -181,6 +187,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Forms\ViewChatterContact.resx">
+      <DependentUpon>ViewChatterContact.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

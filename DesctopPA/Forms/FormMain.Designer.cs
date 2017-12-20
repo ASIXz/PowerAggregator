@@ -83,6 +83,9 @@
             // 
             // listMessages
             // 
+            this.listMessages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listMessages.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
             this.listMessages.FormattingEnabled = true;
             this.listMessages.ItemHeight = 15;
@@ -196,6 +199,8 @@
             // 
             // tabControl1
             // 
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Location = new System.Drawing.Point(12, 55);
@@ -240,7 +245,7 @@
             this.removeContactToolStripMenuItem,
             this.viewInfoToolStripMenuItem1});
             this.contextAgregated.Name = "contextAgregated";
-            this.contextAgregated.Size = new System.Drawing.Size(161, 92);
+            this.contextAgregated.Size = new System.Drawing.Size(161, 70);
             this.contextAgregated.Opening += new System.ComponentModel.CancelEventHandler(this.contextAgregated_Opening);
             // 
             // editContactToolStripMenuItem
@@ -318,6 +323,8 @@
             // 
             // textBox1
             // 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.Location = new System.Drawing.Point(259, 488);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
@@ -326,6 +333,7 @@
             // 
             // buttonSend
             // 
+            this.buttonSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buttonSend.Location = new System.Drawing.Point(826, 488);
             this.buttonSend.Name = "buttonSend";

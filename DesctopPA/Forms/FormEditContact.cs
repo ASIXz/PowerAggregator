@@ -64,5 +64,23 @@ namespace DesctopPA
         {
             if (changed) DialogResult = DialogResult.OK;
         }
+
+        private void buttonRemove_Click(object sender, EventArgs e)
+        {
+            //at lest one contact
+            if (user.Chatters.Count > 1 && listChattersContacts.SelectedItems.Count == 1)
+            {
+                var cUser = listChattersContacts.SelectedItems[0].Tag as ChatterUser;
+                cUser.AgregatorUser = null;
+                user.Chatters.Remove(cUser);
+
+                listChattersContacts.Clear();
+                foreach (ChatterUser chatterUser in user.Chatters)
+                {
+                    var item = listChattersContacts.Items.Add(chatterUser.ToString());
+                    item.Tag = chatterUser;
+                }
+            }
+        }
     }
 }

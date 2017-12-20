@@ -83,7 +83,7 @@ namespace TelegramPlugin
                 {
                     Thread.CurrentThread.IsBackground = true;
                     /* run your code here */
-                    Login2();
+                    ALogin2();
                     Task.Delay(5000).Wait();
                 });
                 x.Start();
@@ -97,7 +97,7 @@ namespace TelegramPlugin
             }
         }
 
-        async void Login2()
+        async void ALogin2()
         {
             try
             {
@@ -177,7 +177,6 @@ namespace TelegramPlugin
         {
             int id = 0;
             long hash = DecomposeId(user.UserId, out id);
-            await client.ConnectAsync(true);
             try
             {
                 ActionResult = await client.GetHistoryAsync(new TLInputPeerUser() { UserId = id, AccessHash = hash }, 0, 0, 0);
