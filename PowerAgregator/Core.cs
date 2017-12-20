@@ -145,6 +145,7 @@ namespace PowerAgregator
                     }
                 }
             }
+            //user = ChatterUsers.First(x => x.UserId == user.UserId);
             user.Messages.AddRange(messages);
             MessageAdded?.Invoke(messages, user);
         }

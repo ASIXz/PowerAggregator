@@ -105,7 +105,7 @@ namespace TelegramPlugin
                                     var msgs = GetChatForUser(user, user.Messages.Count);
                                     if (msgs.Any())
                                     {
-                                        user.Messages.AddRange(msgs);
+                                        user.Messages = msgs.ToList();
                                         MessageRecived?.Invoke(msgs, user);
                                     }
                                 }
