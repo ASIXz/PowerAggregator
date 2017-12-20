@@ -175,7 +175,8 @@ namespace TelegramPlugin
 
         public async void AGetHistory(ChatterUser user)
         {
-            long hash = DecomposeId(user.UserId, out int id);
+            int id = 0;
+            long hash = DecomposeId(user.UserId, out id);
             await client.ConnectAsync(true);
             try
             {
@@ -189,7 +190,8 @@ namespace TelegramPlugin
 
         public IEnumerable<Message> GetChatForUser(ChatterUser user)
         {
-            if(DecomposeId(user.UserId, out int id) == this.user.AccessHash) return new List<Message>();
+            int id = 0;
+            if(DecomposeId(user.UserId, out id) == this.user.AccessHash) return new List<Message>();
             var z = new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
