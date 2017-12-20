@@ -254,5 +254,35 @@ namespace DesctopPA
                 listMessages.Items.Clear();
             }
         }
+
+        private void removeAccountToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormRemoveAccount formRemoveAccount = new FormRemoveAccount();
+            formRemoveAccount.core = Core;
+            if(formRemoveAccount.ShowDialog() == DialogResult.OK)
+            {
+                LoadContacts();
+            }
+        }
+
+        private void removeContactToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listAgregatorContacts.SelectedItems.Count > 0)
+            {
+                var contact = listAgregatorContacts.SelectedItems[0].Tag as AgregatorUser;
+                var message = "Do you want remove this contact?\n" + contact.Name;
+                if (MessageBox.Show(message, "Delete contact", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    foreach (ChatterUser item in contact.Chatters)
+                    {
+                        item.AgregatorUser = null;
+                    }
+                    Core.Users.Remove(contact);
+                    LoadContacts();
+                    CurrentUser = null;
+                    listMessages.Items.Clear();
+                }
+            }
+        }
     }
 }

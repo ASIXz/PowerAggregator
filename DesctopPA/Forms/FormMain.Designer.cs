@@ -169,6 +169,7 @@
             this.removeAccountToolStripMenuItem.Name = "removeAccountToolStripMenuItem";
             this.removeAccountToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.removeAccountToolStripMenuItem.Text = "Remove account";
+            this.removeAccountToolStripMenuItem.Click += new System.EventHandler(this.removeAccountToolStripMenuItem_Click);
             // 
             // reloginToolStripMenuItem
             // 
@@ -239,7 +240,7 @@
             this.removeContactToolStripMenuItem,
             this.viewInfoToolStripMenuItem1});
             this.contextAgregated.Name = "contextAgregated";
-            this.contextAgregated.Size = new System.Drawing.Size(161, 70);
+            this.contextAgregated.Size = new System.Drawing.Size(161, 92);
             this.contextAgregated.Opening += new System.ComponentModel.CancelEventHandler(this.contextAgregated_Opening);
             // 
             // editContactToolStripMenuItem
@@ -254,6 +255,7 @@
             this.removeContactToolStripMenuItem.Name = "removeContactToolStripMenuItem";
             this.removeContactToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.removeContactToolStripMenuItem.Text = "Remove contact";
+            this.removeContactToolStripMenuItem.Click += new System.EventHandler(this.removeContactToolStripMenuItem_Click);
             // 
             // viewInfoToolStripMenuItem1
             // 

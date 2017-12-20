@@ -71,6 +71,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\FormRemoveAccount.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormRemoveAccount.Designer.cs">
+      <DependentUpon>FormRemoveAccount.cs</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\DbHelper.cs" />
     <Compile Include="Forms\FormRemovePlugin.cs">
       <SubType>Form</SubType>
@@ -131,6 +137,9 @@
     <Compile Include="Helpers\PluginHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\FormRemoveAccount.resx">
+      <DependentUpon>FormRemoveAccount.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormRemovePlugin.resx">
       <DependentUpon>FormRemovePlugin.cs</DependentUpon>
     </EmbeddedResource>

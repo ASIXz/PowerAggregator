@@ -112,14 +112,14 @@ namespace PowerAgregator
 
         public override string ToString()
         {
-            return $"[{Chatter.Id}] {Name}";
+            return $"[{Chatter.Id}]{Name}";
         }
 
 
         public ChatterUser() { }
         public ChatterUser(ChatterUserData data, Core core)
         {
-            this.Name = data.Name.Split('[')[0];
+            this.Name = data.Name.Split(']')[1];
             this.UserId = data.UserId;
             this.Chatter = core.Chatters.First(x => x.Id == data.ChatterId);
             if (data.AgregatorUserId != null)
