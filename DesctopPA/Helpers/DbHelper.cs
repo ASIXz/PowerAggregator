@@ -14,8 +14,9 @@ namespace DesctopPA
         public DbSet<SerializedAccount> Accounts { get; set; }
         public DbSet<MessageData> Messages { get; set; }
 
-        public PowerAgregatorContext5() 
+        public PowerAgregatorContext5() : base("DBConnection")
         {
+            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<PowerAgregatorContext5>());
 
         }
     }
@@ -26,10 +27,10 @@ namespace DesctopPA
         public static void SaveAccountDataToDataBase(Core core)
         {
             if (db == null) db = new PowerAgregatorContext5();
-            
+
             db.Accounts.RemoveRange(db.Accounts);
             db.Accounts.AddRange(core.Chatters.Select(x => x.StoreData()));
-            
+
             db.ChatterUser.RemoveRange(db.ChatterUser);
             db.ChatterUser.AddRange(core.ChatterUsers.Select(x => x.StoreData()));
 
@@ -53,7 +54,7 @@ namespace DesctopPA
 
             db.SaveChanges();
 
-            
+
         }
 
         public static void RestoreAccountDataFromDataBase(Core core)
@@ -82,10 +83,10 @@ namespace DesctopPA
         public static void SaveMessages(ChatterUser user)
         {
             db.Messages.RemoveRange(db.Messages.Where(x => x.UserId == user.UserId));
-            db.Messages.AddRange(user.Messages.Select(x => x.StoreData()));
+            db.Messages.AddRange(user.Messages.GroupBy(x => x.Time).Select(x => x.First().StoreData()));
             db.SaveChanges();
         }
-        
+
         public static void SaveMessage(Message message)
         {
             db.Messages.Add(message.StoreData());

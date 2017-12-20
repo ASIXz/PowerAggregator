@@ -8,6 +8,7 @@ using TLSharp.Core;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
 using System.Threading;
+using TeleSharp.TL.Updates;
 
 namespace TelegramPlugin
 {
@@ -68,10 +69,17 @@ namespace TelegramPlugin
             {
                 hash = await client.SendCodeRequestAsync(login);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 hash = await client.SendCodeRequestAsync(login);
             }
+        }
+        TLDifference diff = null;
+        private async void DifferenceCheck()
+        {
+            var state = await client.SendRequestAsync<TLState>(new TLRequestGetState());
+            var req = new TLRequestGetDifference() { Date = state.Date, Pts = state.Pts, Qts = state.Qts };
+            diff = await client.SendRequestAsync<TLAbsDifference>(req) as TLDifference;
         }
 
         public bool LoginStep2(string code)
@@ -88,7 +96,28 @@ namespace TelegramPlugin
                 });
                 x.Start();
                 x.Join();
-                if (user != null) return true;
+                if (user != null)
+                {
+                    var z = new Thread(() =>
+                    {
+                        Thread.CurrentThread.IsBackground = true;
+                        /* run your code here */
+                        while (true)
+                        {
+                            DifferenceCheck();
+                            Task.Delay(1000).Wait();
+                            if (diff != null)
+                            {
+                                foreach (var msg in diff.NewMessages.OfType<TLUpdateNewMessage>())
+                                {
+                                    TLMessage c = msg.Message as TLMessage;
+                                }
+                            }
+                        }
+                    });
+                    z.Start();
+                    return true;
+                }
                 else return false;
             }
             catch (Exception ex)
@@ -116,7 +145,7 @@ namespace TelegramPlugin
         async void AGetUsers()
         {
             TLDialogs Dialogs;
-            await client.ConnectAsync();
+            //await client.ConnectAsync();
             try
             {
                 Dialogs = (TLDialogs)await client.GetUserDialogsAsync();
@@ -159,7 +188,7 @@ namespace TelegramPlugin
                 }
                 catch (Exception ex)
                 {
-                    item.Messages = new Message[] { new Message(item) { Time = DateTime.Now, Recived = true, Text = ex.Message} }.ToList();
+                    item.Messages = new Message[] { new Message(item) { Time = DateTime.Now, Recived = true, Text = ex.Message } }.ToList();
                 }
             }
             return result;
@@ -190,13 +219,13 @@ namespace TelegramPlugin
         public IEnumerable<Message> GetChatForUser(ChatterUser user)
         {
             int id = 0;
-            if(DecomposeId(user.UserId, out id) == this.user.AccessHash) return new List<Message>();
+            if (DecomposeId(user.UserId, out id) == this.user.AccessHash) return new List<Message>();
             var z = new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
                 /* run your code here */
                 AGetHistory(user);
-                Task.Delay(5000).Wait();
+                Task.Delay(1000).Wait();
             });
             z.Start();
             z.Join();
@@ -266,10 +295,25 @@ namespace TelegramPlugin
             throw new NotImplementedException();
         }
 
+        async void ASendMessage(Message msg)
+        {
+            int id = 0;
+            long hash = DecomposeId(msg.User.UserId, out id);
+            await client.SendMessageAsync(new TLInputPeerUser() { AccessHash = hash, UserId = id }, msg.Text);
+        }
         public bool SendMessage(ref Message message)
         {
-            return false;
-            //throw new NotImplementedException();
+            var msg = message;
+            var x = new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+                /* run your code here */
+                ASendMessage(msg);
+                Task.Delay(1000).Wait();
+            });
+            x.Start();
+            x.Join();
+            return true;
         }
 
         public bool Resume(Func<string> auth)
