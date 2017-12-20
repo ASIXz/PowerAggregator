@@ -25,11 +25,26 @@ namespace DesctopPA
         {
             if (!string.IsNullOrWhiteSpace(textBox1.Text) && !core.Users.Any(x => x.Name == textBox1.Text))
             {
+
                 core.AddUser(user, textBox1.Text);
+                if (!string.IsNullOrWhiteSpace(textBox2.Text)) ImageHelper.AddImage(textBox2.Text, textBox1.Text) ;
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
 
+        }
+
+        private void buttonBrowse_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                textBox2.Text = openFileDialog1.FileName;
+                using (var bmpTemp = new Bitmap(openFileDialog1.FileName))
+                {
+                    pictureBox1.Image = new Bitmap(bmpTemp);
+                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+            }
         }
     }
 }

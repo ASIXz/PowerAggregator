@@ -19,6 +19,8 @@ namespace DesctopPA
         }
 
         public AgregatorUser user;
+        public Core core;
+        public bool changed;
 
         private void FormEditContact_Shown(object sender, EventArgs e)
         {
@@ -28,11 +30,39 @@ namespace DesctopPA
                 var item = listChattersContacts.Items.Add(chatterUser.ToString());
                 item.Tag = chatterUser;
             }
+            textBox1.Text = user.Name;
+            pictureBox1.Image = ImageHelper.GetImage(user.Name);
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                textBox2.Text = openFileDialog1.FileName;
+            }
+        }
 
+        private void buttonChange_Click(object sender, EventArgs e)
+        {
+            var Name = user.Name;
+            if (textBox1.Text != user.Name)
+                if (core.ChangeUserKey(user, textBox1.Text))
+                {
+                    changed = true;
+                    ImageHelper.RenameImage(Name, textBox1.Text);
+                }
+                else MessageBox.Show("Incorrect Name");
+
+            if (!string.IsNullOrWhiteSpace(textBox2.Text))
+            {
+                var ImageKey = ImageHelper.AddImage(textBox2.Text, user.Name);
+                pictureBox1.Image = ImageHelper.List.Images[ImageKey];
+            }
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            if (changed) DialogResult = DialogResult.OK;
         }
     }
 }

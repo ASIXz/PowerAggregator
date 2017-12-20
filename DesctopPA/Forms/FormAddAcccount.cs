@@ -22,7 +22,10 @@ namespace DesctopPA
         private void comboPlugins_SelectedIndexChanged(object sender, EventArgs e)
         {
             //SelectedPlugin = new TelegramPlugin.TelegramPlugin() as PowerAgregator.IChatPlugin; 
-            SelectedPlugin = Activator.CreateInstance(PluginHelper.Plugins[comboPlugins.SelectedIndex]) as PowerAgregator.IChatPlugin;
+            if (PluginHelper.Plugins[comboPlugins.SelectedIndex].Name != "TelegramPlugin")
+                SelectedPlugin = Activator.CreateInstance(PluginHelper.Plugins[comboPlugins.SelectedIndex]) as PowerAgregator.IChatPlugin;
+            else
+                SelectedPlugin = new TelegramPlugin.TelegramPlugin() as PowerAgregator.IChatPlugin;
 
             labelLogin.Show();
             textLogin.Show();

@@ -17,7 +17,6 @@ namespace DesctopPA
     {
         Core Core = new Core();
         object CurrentUser = null;
-        ImageList images = new ImageList();
 
         delegate void AddMessageActio(PowerAgregator.Message msg);
         void AddMessage(PowerAgregator.Message msg)
@@ -52,21 +51,15 @@ namespace DesctopPA
             Core.MessageAdded += (x) =>
             {
                 Invoke(new AddMessageActio(AddMessage), x);
-                CoreSaveHelper.SaveMessage(x);
+                DBHelper.SaveMessage(x);
             };
         }
 
         private void FormMain_Load(object sender, EventArgs e)
         {
             //CoreSaveHelper.ClearDatabase();
-            CoreSaveHelper.RestoreAccountDataFromDataBase(Core);
-            images.ImageSize = new Size(44, 44);
-            var dir = Directory.GetFiles(Path.GetFullPath("img"));
-            foreach (var item in dir)
-            {
-                images.Images.Add(Path.GetFileNameWithoutExtension(item), Image.FromFile(item));
-            }
-            listAgregatorContacts.LargeImageList = images;
+            DBHelper.RestoreAccountDataFromDataBase(Core);
+            listAgregatorContacts.LargeImageList = ImageHelper.List;
             LoadContacts();
         }
 
@@ -87,7 +80,7 @@ namespace DesctopPA
             {
                 var user = listAgregatorContacts.SelectedItems[0].Tag as AgregatorUser;
                 listMessages.Items.Clear();
-                listMessages.Items.AddRange(Core.GetChatMessages(user, CoreSaveHelper.LoadMessages).ToArray());
+                listMessages.Items.AddRange(Core.GetChatMessages(user, DBHelper.LoadMessages).ToArray());
                 label2.Text = "Messages - " + user.ToString();
                 CurrentUser = user;
                 listAgregatorContacts.SelectedItems[0].Font = new Font(listAgregatorContacts.SelectedItems[0].Font, FontStyle.Regular);
@@ -100,9 +93,9 @@ namespace DesctopPA
             {
                 listMessages.Items.Clear();
                 var user = listChattersContacts.SelectedItems[0].Tag as ChatterUser;
-                if (user.Messages == null) CoreSaveHelper.LoadMessages(user);
+                if (user.Messages == null) DBHelper.LoadMessages(user);
                 listMessages.Items.AddRange(Core.GetChatMessages(user).ToArray());
-                CoreSaveHelper.SaveMessages(user);
+                DBHelper.SaveMessages(user);
                 label2.Text = "Messages - " + user.ToString();
                 CurrentUser = user;
                 listChattersContacts.SelectedItems[0].Font = new Font(listChattersContacts.SelectedItems[0].Font, FontStyle.Regular);
@@ -118,10 +111,7 @@ namespace DesctopPA
                 var item = listAgregatorContacts.Items.Add(user.ToString(), i++);
                 item.Tag = user;
                 string ImageKey = string.Concat(user.Name.Where(x => !Path.GetInvalidPathChars().Contains(x)));
-                if (listAgregatorContacts.LargeImageList.Images.Keys.Contains(ImageKey))
-                    item.ImageKey = ImageKey;
-                else
-                    item.ImageKey = "default";
+                item.ImageKey = ImageHelper.GetImageKey(user.Name);
             }
             listChattersContacts.Clear();
             foreach (ChatterUser user in Core.ChatterUsers)
@@ -172,7 +162,11 @@ namespace DesctopPA
         {
             FormEditContact formEditContact = new FormEditContact();
             formEditContact.user = listAgregatorContacts.SelectedItems[0].Tag as AgregatorUser;
-            formEditContact.ShowDialog();
+            formEditContact.core = Core;
+            if (formEditContact.ShowDialog() == DialogResult.OK)
+            {
+                LoadContacts();
+            }
         }
 
         private void listBox1_DrawItem(object sender, DrawItemEventArgs e)
@@ -184,6 +178,7 @@ namespace DesctopPA
                 var color = msg.Recived ? Brushes.Black : Brushes.DarkCyan;
                 e.Graphics.DrawString(msg.ToString(), listMessages.Font, color, e.Bounds);
                 e.DrawFocusRectangle();
+
             }
         }
 
@@ -194,6 +189,14 @@ namespace DesctopPA
             int htex = (e.Index == 0) ? 15 : 10;
             e.ItemHeight = (int)(sf.Height) + 1;
             e.ItemWidth = listMessages.Width;
+
+            if (autoScrollToolStripMenuItem.Checked && listMessages.Items.Count > 10)
+            {
+                //int nItems = (int)(listMessages.Height / listMessages.ItemHeight);
+                listMessages.TopIndex = listMessages.Items.Count - 1;
+                //listMessages.SelectedIndex = listMessages.Items.Count - 1;
+                //listMessages.SelectedIndex = -1;
+            }
         }
 
         private void buttonSend_Click(object sender, EventArgs e)
@@ -217,7 +220,7 @@ namespace DesctopPA
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CoreSaveHelper.SaveAccountDataToDataBase(Core);
+            DBHelper.SaveAccountDataToDataBase(Core);
         }
 
         private void addPluginToolStripMenuItem_Click(object sender, EventArgs e)
@@ -231,6 +234,11 @@ namespace DesctopPA
             FormRemovePlugin formRemovePlugin = new FormRemovePlugin();
             formRemovePlugin.Accounts = Core.Chatters;
             formRemovePlugin.ShowDialog();
+        }
+
+        private void autoScrollToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            autoScrollToolStripMenuItem.Checked = !autoScrollToolStripMenuItem.Checked;
         }
     }
 }

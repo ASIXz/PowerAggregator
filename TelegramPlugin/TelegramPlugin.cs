@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace TelegramPlugin
 {
-    public class TelegramPlugin : PowerAgregator.IChatPlugin
+    public class TelegramPlugin : IChatPlugin
     {
         static DateTime ZeroTDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
@@ -43,7 +43,9 @@ namespace TelegramPlugin
             this.login = login;
             var store = new FileSessionStore();
             string sessionKey = Name;
-            client = new TelegramClient(162156, "489ea0f0a6ec8dff21fd02dcbea6ee42", store, sessionKey);
+            //153480, "b4fe99e13f7820911ad3cd6c12514e7f
+            //162156, "489ea0f0a6ec8dff21fd02dcbea6ee42
+            client = new TelegramClient(153480, "b4fe99e13f7820911ad3cd6c12514e7f", store, sessionKey);
             var x = new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
@@ -66,7 +68,7 @@ namespace TelegramPlugin
             {
                 hash = await client.SendCodeRequestAsync(login);
             }
-            catch
+            catch(Exception ex)
             {
                 hash = await client.SendCodeRequestAsync(login);
             }
@@ -151,7 +153,14 @@ namespace TelegramPlugin
             var result = ActionResult as IEnumerable<ChatterUser>;
             foreach (ChatterUser item in result)
             {
-                item.Messages = GetChatForUser(item).ToList();
+                try
+                {
+                    item.Messages = GetChatForUser(item).ToList();
+                }
+                catch (Exception ex)
+                {
+                    item.Messages = new Message[] { new Message(item) { Time = DateTime.Now, Recived = true, Text = ex.Message} }.ToList();
+                }
             }
             return result;
         }
@@ -172,7 +181,7 @@ namespace TelegramPlugin
             {
                 ActionResult = await client.GetHistoryAsync(new TLInputPeerUser() { UserId = id, AccessHash = hash }, 0, 0, 0);
             }
-            catch
+            catch (Exception ex)
             {
                 ActionResult = new TLMessagesSlice();
             }
@@ -180,6 +189,7 @@ namespace TelegramPlugin
 
         public IEnumerable<Message> GetChatForUser(ChatterUser user)
         {
+            if(DecomposeId(user.UserId, out int id) == this.user.AccessHash) return new List<Message>();
             var z = new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
@@ -189,19 +199,36 @@ namespace TelegramPlugin
             });
             z.Start();
             z.Join();
-            var msgs = (TLMessagesSlice)ActionResult;
-            var result = msgs.Messages.Select(x =>
+            if (ActionResult is TLMessagesSlice)
             {
-                var msg = (TLMessage)x;
-                return new Message(user)
+                var msgs = (TLMessagesSlice)ActionResult;
+                var result = msgs.Messages.Select(x =>
                 {
-                    Time = ZeroTDate.AddSeconds(msg.Date),
-                    Recived = !msg.Out,
-                    Text = msg.Message
-                };
-            });
-
-            return result;
+                    var msg = (TLMessage)x;
+                    return new Message(user)
+                    {
+                        Time = ZeroTDate.AddSeconds(msg.Date),
+                        Recived = !msg.Out,
+                        Text = msg.Message
+                    };
+                });
+                return result;
+            }
+            else
+            {
+                var msgs = (TLMessages)ActionResult;
+                var result = msgs.Messages.Select(x =>
+                {
+                    var msg = (TLMessage)x;
+                    return new Message(user)
+                    {
+                        Time = ZeroTDate.AddSeconds(msg.Date),
+                        Recived = !msg.Out,
+                        Text = msg.Message
+                    };
+                });
+                return result;
+            }
 
             //ZeroTDate.AddSeconds(((res as TLMessages).Messages[0] as TLMessage).Date)
         }
@@ -240,12 +267,14 @@ namespace TelegramPlugin
 
         public bool SendMessage(ref Message message)
         {
-            throw new NotImplementedException();
+            return false;
+            //throw new NotImplementedException();
         }
 
         public bool Resume(Func<string> auth)
         {
-            throw new NotImplementedException();
+            return false;
+            // throw new NotImplementedException();
         }
 
         public byte[] GetImage(ChatterUser user)

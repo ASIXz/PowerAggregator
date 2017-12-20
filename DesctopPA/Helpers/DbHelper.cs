@@ -20,7 +20,7 @@ namespace DesctopPA
         }
     }
 
-    public static class CoreSaveHelper
+    public static class DBHelper
     {
         public static PowerAgregatorContext5 db;
         public static void SaveAccountDataToDataBase(Core core)

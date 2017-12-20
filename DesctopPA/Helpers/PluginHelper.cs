@@ -18,12 +18,12 @@ namespace DesctopPA
             Plugins = new List<Type>();
             foreach (var path in Directory.GetFiles("Plugins"))
             {
-                if (path.EndsWith(".dll") && !path.EndsWith("PowerAgregator.dll"))
+                if (path.EndsWith("TestPlugin.dll")&& path.EndsWith(".dll") && !path.EndsWith("PowerAgregator.dll") && !path.EndsWith("TelegramPlugin.dll"))
                 {
                     LoadPlugin(path);
                 }
             }
-           // Plugins.Add(typeof(TelegramPlugin.TelegramPlugin));
+            Plugins.Add(typeof(TelegramPlugin.TelegramPlugin));
 
         }
 
@@ -32,7 +32,7 @@ namespace DesctopPA
             try
             {//File.ReadAllBytes
                 //if (!Path.IsPathRooted(path)) path = Path.GetFullPath(path);
-                Assembly module = Assembly.Load(File.ReadAllBytes(path));
+                Assembly module = Assembly.LoadFile(Path.GetFullPath(path));
                 Type chatterClass = module.GetTypes().FirstOrDefault(x => x.GetInterfaces().Contains(typeof(IChatPlugin)));
                 if (chatterClass != null)
                 {

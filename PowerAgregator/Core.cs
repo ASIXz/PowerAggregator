@@ -149,5 +149,13 @@ namespace PowerAgregator
             user.Messages.Add(message);
             MessageAdded?.Invoke(message);
         }
+
+        public bool ChangeUserKey(AgregatorUser user, string name)
+        {
+            if (string.IsNullOrWhiteSpace(name) || (Users.Any(x => x.Name == name))) return false;
+            else
+                user.Name = name;
+            return true;
+        }
     }
 }
